@@ -1,6 +1,6 @@
 package com.present.GifticBe.service;
 
-import com.present.GifticBe.domain.Users;
+import com.present.GifticBe.domain.User;
 import com.present.GifticBe.exception.AppException;
 import com.present.GifticBe.exception.ErrorCode;
 import com.present.GifticBe.repository.UserRepository;
@@ -24,7 +24,7 @@ public class UserService {
 
     private Long expireTimeMs = 1000 * 60 * 60L;
 
-    public String join(String email, String password) {
+    public String join(String email, String password, String userName) {
 
         // username 중복 체크
         userRepository.findByEmail(email)
@@ -33,12 +33,13 @@ public class UserService {
                 });
 
         // 저장
-        Users users = Users.builder()
+        User user = User.builder()
                 .email(email)
+                .userName(userName)
                 .password(encoder.encode(password))
                 .build();
 
-        userRepository.save(users);
+        userRepository.save(user);
 
         return "SUCCESS";
     }
@@ -48,7 +49,7 @@ public class UserService {
         /**
          * userName 없음
          */
-        Users selectedUser = userRepository.findByEmail(email)
+        User selectedUser = userRepository.findByEmail(email)
                 .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND, email + "이 없습니다."));
 
         /**
