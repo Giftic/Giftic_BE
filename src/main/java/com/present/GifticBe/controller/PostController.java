@@ -1,9 +1,6 @@
 package com.present.GifticBe.controller;
 
-import com.present.GifticBe.domain.dto.PostsAllResponseDto;
-import com.present.GifticBe.domain.dto.PostsResponseDto;
-import com.present.GifticBe.domain.dto.PostsSaveRequestDto;
-import com.present.GifticBe.domain.dto.PostsUpdateRequestDto;
+import com.present.GifticBe.domain.dto.*;
 import com.present.GifticBe.service.PostsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +28,7 @@ public class PostController {
         return postsService.findById(id);
     }
 
-    @GetMapping("/api/v1/posts")
+    @GetMapping("/api/v1/posts/findAll")
     public List<PostsResponseDto> findAll() {
         return postsService.findAll();
     }
@@ -42,10 +39,10 @@ public class PostController {
         return id;
     }
 
-
-
-//    @GetMapping("/api/v1/posts")
-//    public PostsAllResponseDto findAll() {
-//        return postsService.findAll();
-//    }
+    @GetMapping("/api/v1/posts/findByKeyword")
+    public List<PostsResponseDto> findByKeyword(@RequestBody KeywordDto keywordDto){
+        String keyword = keywordDto.getKeyword();
+        System.out.println(keyword);
+        return postsService.findByKeyword(keyword);
+    }
 }

@@ -11,15 +11,19 @@ spring:
       enabled: always
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     show-sql: true
     database:
+    properties:
+      hibernate:
+        format_sql: true
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/kakao?useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC
+#    url: jdbc:mysql://localhost:3306/kakao?useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC
 #    url: jdbc:mysql://myrds.cn6oq0g93zz1.ap-northeast-2.rds.amazonaws.com:3306/kakao?useSSL=false
-    username: root
-    password: root
+    url: jdbc:mysql://15.165.142.48:3306/giftic?useSSL=false&allowPublicKeyRetrieval=true
+    username: giftic
+    password: rootroot
 
 jwt:
   token:
