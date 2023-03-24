@@ -11,10 +11,10 @@ public class PostsSaveRequestDto {
 
     private String title;
     private String content;
-    private String author;
+    private Long author;
 
     @Builder
-    public PostsSaveRequestDto(String title, String content, String author) {
+    public PostsSaveRequestDto(String title, String content, Long author) {
         this.title = title;
         this.content = content;
         this.author = author;
@@ -24,7 +24,6 @@ public class PostsSaveRequestDto {
         return Posts.builder()
                 .title(title)
                 .content(content)
-                .author(author)
                 .build();
     }
 
