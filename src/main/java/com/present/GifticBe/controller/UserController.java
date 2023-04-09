@@ -1,15 +1,22 @@
 package com.present.GifticBe.controller;
 
 
+import com.present.GifticBe.domain.User;
 import com.present.GifticBe.domain.dto.UserJoinRequest;
 import com.present.GifticBe.domain.dto.UserLoginRequest;
+import com.present.GifticBe.generic.Result;
+import com.present.GifticBe.repository.UserRepository;
 import com.present.GifticBe.service.UserService;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.*;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.*;
+
+
+import javax.servlet.http.HttpServletResponse;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserService userService;
+    private final UserRepository userRepository;
 
     @PostMapping("/join")
     public ResponseEntity<String> join(@RequestBody UserJoinRequest dto) {
@@ -25,8 +33,32 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody UserLoginRequest dto) {
+    public ResponseEntity<?> login(@RequestBody UserLoginRequest dto, HttpServletResponse response) {
         String token = userService.login(dto.getEmail(), dto.getPassword());
-        return ResponseEntity.ok().body(token);
+        ResponseCookie cookie = ResponseCookie.from("ACCESSTOKEN", token)
+                .maxAge(7 * 24 * 60 * 60) // 쿠키 만료기간 7일
+                .path("/")
+                .secure(true)
+                .sameSite("None")
+                .httpOnly(true)
+                .build();
+
+        response.setHeader("Set-Cookie", cookie.toString());
+
+        User user = userRepository.findByEmail(dto.getEmail()).get();
+        UserLoginRequest loginDto = new UserLoginRequest();
+
+        HttpHeaders header = new HttpHeaders();
+        header.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
+
+        loginDto.setId(user.getId());
+        loginDto.setUserName(user.getUserName());
+        loginDto.setEmail(user.getEmail());
+
+
+        System.out.println(dto.getEmail());
+        System.out.println(user.getEmail());
+
+        return new ResponseEntity<>(loginDto, header, HttpStatus.OK);
     }
 }
