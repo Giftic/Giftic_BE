@@ -69,4 +69,9 @@ public class PostsService {
 
         return PostsResponseDto.from(search);
     }
+
+//    public void vote(Posts posts, User user) {
+////        posts.getVoter().add(user);
+//        this.postRepository.save(posts);
+//    }
 }
