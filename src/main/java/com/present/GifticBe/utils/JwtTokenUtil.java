@@ -15,7 +15,8 @@ public class JwtTokenUtil {
                 .setClaims(claims)
                 .setIssuedAt(new Date(System.currentTimeMillis())) // 만든날짜
                 .setExpiration(new Date(System.currentTimeMillis() + expireTimeMs)) // 끝나는 날짜
-                .signWith(SignatureAlgorithm.HS256, key) // key를 가지고 해당 ES256 알고리즘으로 jwt를 만들겠다는 것음
+                .signWith(SignatureAlgorithm.HS256, key) // key를 가지고 해당 ES256 알고리즘으로 jwt를 만들겠다는 것임
                 .compact();
     }
+
 }

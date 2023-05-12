@@ -1,7 +1,5 @@
 package com.present.GifticBe.repository;
 
-
-
 import com.present.GifticBe.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 

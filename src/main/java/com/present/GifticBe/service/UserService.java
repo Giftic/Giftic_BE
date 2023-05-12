@@ -1,6 +1,7 @@
 package com.present.GifticBe.service;
 
 import com.present.GifticBe.domain.User;
+import com.present.GifticBe.domain.dto.UserRole;
 import com.present.GifticBe.exception.AppException;
 import com.present.GifticBe.exception.ErrorCode;
 import com.present.GifticBe.repository.UserRepository;
@@ -8,9 +9,18 @@ import com.present.GifticBe.utils.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -37,6 +47,8 @@ public class UserService {
                 .email(email)
                 .userName(userName)
                 .password(encoder.encode(password))
+                .joinDate(LocalDateTime.now())
+                .grade("BRONZE")
                 .build();
 
         userRepository.save(user);
@@ -66,5 +78,14 @@ public class UserService {
         String token = JwtTokenUtil.createToken(selectedUser.getEmail(), key, expireTimeMs);
 
         return token;
+    }
+
+    public User getUser(Long id) {
+        Optional<User> user = this.userRepository.findUserById(id);
+        if (user.isPresent()) {
+            return user.get();
+        } else {
+            throw new AppException(ErrorCode.USERNAME_NOT_FOUND, "해당 유저가 존재하지 않습니다.");
+        }
     }
 }

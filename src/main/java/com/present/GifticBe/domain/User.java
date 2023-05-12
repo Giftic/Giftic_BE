@@ -4,8 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,14 +33,20 @@ public class User {
 
     private String grade;
 
-    private String joinDate;
+    private LocalDateTime joinDate;
 
-    private String nickName;
+    @OneToMany(mappedBy = "donate_user", cascade = CascadeType.ALL)
+    private List<Donate> donateList = new ArrayList<>();
 
-//    private Long postId;
+    @Builder
+    public User(String email, String password, String userName, String grade, LocalDateTime joinDate) {
+        this.email = email;
+        this.password = password;
+        this.userName = userName;
+        this.grade = grade;
+        this.joinDate = joinDate;
+    }
 
-    private Long postLikeId;
-
-    private Long alertId;
-
+    public User(String email, String password, List<GrantedAuthority> authorities) {
+    }
 }
